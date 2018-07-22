@@ -1,0 +1,58 @@
+---
+title: "Do you want to know how much people live and earn around the world?"
+author: "Luis Valladares"
+date: "22 de julio de 2018"
+transition: rotate
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(ggplot2)
+library(plotly)
+library(dplyr)
+
+ruta <- file.path("C:/Users/junio/Desktop/COURSERA/DATA SCIENCE/COURSE 9 - Data Products/WEEK 4/FinalProject/Data/WHO.csv")
+who = read.csv(ruta, header = TRUE)
+who <- who[!is.na(who$GNI), c("Country", "Region", "LifeExpectancy", "GNI", "Population")]
+who <- who %>% mutate(Population = Population*1000)
+```
+
+## Introduction
+
+<p align="justify"> <font size="5" color="grey"> The present application shows the relationship between the Gross National Income per Capita (thousands of dollars per year) and the Life Expectancy around the world. As expected, we see that there is a direct relationship between both variables, with African countries having the lowest income and therefore with the lowest life expectancy, the opposite occurs with European countries and with some such as Singapure and Qatar. It is worth mentioning that countries such as Chile and Costa Rica have incomes of less than $ 20,000 and a considerable life expectancy of 79 years each. </font></p>
+
+## Interactive Plot
+
+<p align="justify"> <font size="4" color="grey"> This is an interactive plot inside the application, we can see that the countries are represented by circles that are colored according to the region (continent) to which they belong. Also, the size of the circumferences depends on the size of the population of that country. </font></p>
+
+```{r, fig.align = 'center'}
+m <- list(l = 50, r = 50, b = 0, t = 70, pad = 4)
+
+plot_ly(who, x = ~GNI, y = ~LifeExpectancy, type = "scatter", mode = "markers", hoverinfo = 'text', text = ~paste('</br> Country: ', Country, '</br> GNI: $ ', format(GNI, big.mark = ",", digits = 6), '</br> Life Expectancy: ', LifeExpectancy, 'years','</br> Population: ', format(Population, big.mark = ",", digits = 11), " people"), color = ~as.factor(Region), size = ~Population, height = 350) %>%
+layout(title = 'GNI vs LE (2015)', titlefont = list(size = 20), xaxis = list(title =
+'Gross National Income per Capita ($ per year)'), yaxis = list(title = 'Life Expectancy (Years)'), margin = m, autosize = TRUE)
+```
+
+
+## Data Tables
+
+<p align="justify"> <font size="4" color="grey"> This image shows the content of the information with which 2 tables were drawn up, one by region and one by country, these are found in the second and third tab of the application. </font></p>
+
+```{r table, results='asis'}
+library('knitr')
+kable(head(who[order(who$GNI, decreasing = TRUE), ], 5), format = "markdown")
+
+```
+
+## Links
+
+<br> Code (Github): https://github.com/Luxito1988/DataProducts-FinalProject 
+
+<br> Application (Shinny): https://luxito88.shinyapps.io/FinalProject/ 
+ 
+<br> Slides Pitch (Rpubs): http://rpubs.com/Luxito88/PitchProject
+
+
+
